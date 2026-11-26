@@ -1,19 +1,44 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay'
 import { ArrowRight, Calendar, ChevronLeft, ChevronRight, MapPin, Sparkles } from 'lucide-react';
 import { Button } from './ui/button';
 import { Link } from 'react-router';
 import { Badge } from './ui/badge';
+import { formatEventDate, formatPrice } from '@/lib/utils';
 
 
 
 function FeaturedCarousel({ events }) {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [Autoplay({stopOnInteraction:true})])
+  const [selectedIndex, setSelectedIndex] = useState(0)
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [Autoplay({
+    delay: 1000,
+    stopOnInteraction: false,
+    stopOnMouseEnter: true,
+    rootNode: (emblaRoot) => emblaRoot.parentElement,
+  }),
+  ]);
 
-  const goToPrev = () => emblaApi?.scrollPrev()
-  const goToNext = () => emblaApi?.scrollNext()
 
+
+  const goToPrev = () => {
+    emblaApi?.scrollPrev()
+    emblaApi.plugins().autoplay.reset()
+  }
+  const goToNext = () => {
+    emblaApi?.scrollNext()
+    emblaApi.plugins().autoplay.reset()
+  }
+
+const scrollTo =(i) =>{
+emblaApi.scrollTo(i)
+}
+
+  useEffect(() => {
+    if (!emblaApi) return;
+
+    emblaApi.on("select" ,()=> setSelectedIndex(emblaApi.selectedScrollSnap()))
+  }, [emblaApi])
 
   return (
     <div className="relative group">
@@ -79,16 +104,16 @@ function FeaturedCarousel({ events }) {
                     <div className="flex items-center gap-5 pt-2 text-xs sm:text-sm text-stone-300 font-medium flex-wrap">
                       <span className="flex items-center gap-1.5 text-orange-300 font-semibold">
                         <Calendar className="w-4 h-4" />
-                        {/* {formatEventDate(event.startDate)} */}
-                        {event.startDate}
+                        {formatEventDate(event.startDate)}
+                      
                       </span>
                       <span className="flex items-center gap-1.5 text-stone-300">
                         <MapPin className="w-4 h-4 text-stone-400" />
                         {event.venue}, {event.city}
                       </span>
                       <span className="flex items-center gap-1.5 font-bold text-white bg-white/10 px-2.5 py-1 rounded-lg border border-white/10">
-                        {/* {formatPrice(event.price, event.currency)} */}
-                        {event.price}
+                        {formatPrice(event.price, event.currency)}
+                        
                       </span>
                     </div>
 
@@ -122,7 +147,7 @@ function FeaturedCarousel({ events }) {
       </div>
 
 
-        <button
+      <button
         onClick={goToPrev}
         aria-label="Previous slide"
         className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/80 hover:bg-white text-stone-800 shadow-md flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 z-20 cursor-pointer backdrop-blur-sm"
@@ -137,9 +162,24 @@ function FeaturedCarousel({ events }) {
         <ChevronRight className="w-6 h-6" />
       </button>
 
+
+
+      <div className="absolute bottom-4 right-6 flex items-center gap-2 z-20">
+        {events.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => scrollTo(i)}
+            className={`transition-all rounded-full ${i === selectedIndex
+              ? "w-6 h-2 bg-[#E65100]"
+              : "w-2 h-2 bg-white/50 hover:bg-white/80"
+              }`}
+          />
+        ))}
+      </div>
+
     </div>
   );
 }
 
-export default FeaturedCarousel;  
+export default FeaturedCarousel;
 
