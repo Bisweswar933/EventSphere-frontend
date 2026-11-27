@@ -12,7 +12,7 @@ import { formatEventDate, formatPrice } from '@/lib/utils';
 function FeaturedCarousel({ events }) {
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [Autoplay({
-    delay: 1000,
+    delay: 2000,
     stopOnInteraction: false,
     stopOnMouseEnter: true,
     rootNode: (emblaRoot) => emblaRoot.parentElement,

@@ -6,7 +6,7 @@ export function formatPrice(amount, currency = "INR") {
 
     if (!value) return "Free";
 
-    return new Intl.NumberFormat("en-In",
+    return new Intl.NumberFormat("en-IN",
         {
             style: "currency",
             currency,

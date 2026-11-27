@@ -7,9 +7,6 @@ import { Bookmark, Calendar, Compass, Menu, PlusCircle, Search, Sparkles, User, 
 function Navbar() {
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  console.log(isMobileMenuOpen);
-
-
 
   return (
 
