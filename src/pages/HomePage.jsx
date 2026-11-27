@@ -1,7 +1,10 @@
-import FeaturedCarousel from "@/components/FeaturedCarousel";
+import Skeleton from "@/components/common/Skeleton";
+import EventCard from "@/components/events/EventCard";
+import FeaturedCarousel from "@/components/events/FeaturedCarousel";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import {
+  ArrowRight,
   Briefcase,
   ChevronRight,
   Compass,
@@ -15,7 +18,7 @@ import {
   Tag,
   Trophy
 } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useTransition } from "react";
 import { Link } from "react-router";
 
 
@@ -106,24 +109,34 @@ const HUB_CITIES = [
 export default function Home() {
 
   const [isLoading, setIsLoading] = useState(false)
-  const [categories, SetCategories] = useState([])
-
+  const [categories, setCategories] = useState([])
   const [featuredEvents, setFeaturedEvents] = useState([])
+  const [trendingEvents, setTrendingEvents] = useState([])
 
   useEffect(() => {
     async function loadingHomePage() {
       setIsLoading(true)
       try {
-        let { data: { data } } = await axios.get("https://eventsphere-server-mfdb.onrender.com/api/events/featured")
+        let { data: { data }
+        } = await axios.get("https://eventsphere-server-mfdb.onrender.com/api/events/featured")
         setFeaturedEvents(data)
       } catch (error) { }
 
       try {
-        let { data: { data } } = await axios.get("https://eventsphere-server-mfdb.onrender.com/api/categories",);
-        SetCategories(data);
+        let { data: { data }
+        } = await axios.get("https://eventsphere-server-mfdb.onrender.com/api/categories",);
+        setCategories(data);
       } catch (error) { }
-      setIsLoading(false)
 
+      try {
+        let { data: { data }
+        } = await axios.get("https://eventsphere-server-mfdb.onrender.com/api/events?limit=8&sort=startDate&order=asc",);
+        setTrendingEvents(data);
+      } catch (error) {
+
+      }
+
+      setIsLoading(false)
     }
     loadingHomePage()
 
@@ -257,6 +270,40 @@ export default function Home() {
         )}
       </section>
 
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-[#EBE8DF]">
+          <div>
+            <h2 className="text-xl sm:text-2xl font-bold text-stone-900 tracking-tight">
+              Upcoming Gatherings
+            </h2>
+            <p className="text-xs text-stone-500">
+              Verified community events happening in the coming days
+            </p>
+          </div>
+          <Link
+            to="/explore"
+            className="inline-flex items-center justify-center gap-1.5 whitespace-nowrap px-3 py-1.5 text-xs rounded-lg font-medium border border-[#CCC8BA] bg-transparent hover:bg-[#F2F1EC] text-[#222]"
+          >
+            <span>View All Events</span>
+            <ArrowRight />
+          </Link>
+        </div>
+
+        {isLoading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[...Array(8)].map((_, i) => (
+              <Skeleton />
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {trendingEvents.map((e) => {
+              return <EventCard key={e._id} event={e} />;
+            })}
+          </div>
+        )}
+      </section>
+
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-5">
         <div>
           <h2 className="text-xl font-bold text-stone-900 tracking-tight">
@@ -268,9 +315,9 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {HUB_CITIES.map((c) => (
+          {HUB_CITIES.map((c, i) => (
             <Link
-              
+              key={i}
               to="/explore"
               className="group relative rounded-2xl overflow-hidden aspect-4/3 bg-stone-900 shadow-subtle border border-[#EBE8DF]"
             >

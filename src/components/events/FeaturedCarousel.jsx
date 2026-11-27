@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react'
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay'
 import { ArrowRight, Calendar, ChevronLeft, ChevronRight, MapPin, Sparkles } from 'lucide-react';
-import { Button } from './ui/button';
+import { Button } from '../ui/button';
 import { Link } from 'react-router';
-import { Badge } from './ui/badge';
+import { Badge } from '../ui/badge';
 import { formatEventDate, formatPrice } from '@/lib/utils';
 
 

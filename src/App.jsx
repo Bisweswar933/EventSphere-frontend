@@ -1,9 +1,9 @@
 import { Route, Routes, useLocation } from "react-router"
-import Footer from "./components/Footer"
+import Footer from "./components/common/Footer"
 
 import NotFound from "./pages/NotFound"
 import { House } from "lucide-react"
-import Navbar from "./components/Navbar"
+import Navbar from "./components/common/Navbar"
 import HomePage from "./pages/HomePage"
 import { useEffect } from "react"
 
